@@ -1,22 +1,31 @@
 #!/usr/bin/bash -x
 
+declare -A singlet
+flipTheCoin=1
+
 function checkResult ()
 {
-	if [ $1 -eq 0 ]
-	then
-		echo "Heads"
-	else
-		echo "Tails"
-	fi
+	case $1 in
+	0) singlet[head]=$(( ${singlet[head]} + 1 )) ;;
+	1) singlet[tail]=$(( ${singlet[tail]} + 1 )) ;;
+	*) echo "error" ;;
+	esac
 }
+
 echo "Welcome To flipCoin simulator"
 
 
-flipTheCoin=y
 
-while [ $flipTheCoin == y ]
+while [ $flipTheCoin -le 20 ]
 do
 	random=$(( RANDOM % 2 ))
 	checkResult $random
-read -p "do you wish to flip coin again? (y/n): " flipTheCoin
+	flipTheCoin=$(( $flipTheCoin + 1 ))
 done
+
+echo "for start"
+for key in ${!singlet[@]}
+do
+	echo "$key : ${singlet[$key]}"
+done
+
