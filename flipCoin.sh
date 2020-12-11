@@ -1,13 +1,15 @@
 #!/usr/bin/bash -x
 
-declare -A singlet
+declare -A doublet
 flipTheCoin=1
 
 function checkResult ()
 {
-	case $1 in
-	0) singlet[head]=$(( ${singlet[head]} + 1 )) ;;
-	1) singlet[tail]=$(( ${singlet[tail]} + 1 )) ;;
+	case $1$2 in
+	00) doublet[hh]=$(( ${doublet[hh]} + 1 )) ;;
+	11) doublet[tt]=$(( ${doublet[tt]} + 1 )) ;;
+	01) doublet[ht]=$(( ${doublet[ht]} + 1 )) ;;
+	10) doublet[th]=$(( ${doublet[th]} + 1 )) ;;
 	*) echo "error" ;;
 	esac
 }
@@ -18,14 +20,16 @@ echo "Welcome To flipCoin simulator"
 
 while [ $flipTheCoin -le 20 ]
 do
-	random=$(( RANDOM % 2 ))
-	checkResult $random
+	random1=$(( RANDOM % 2 ))
+	random2=$(( RANDOM % 2 ))
+	checkResult $random1 $random2
 	flipTheCoin=$(( $flipTheCoin + 1 ))
 done
 
-echo "for start"
-for key in ${!singlet[@]}
+for key in ${!doublet[@]}
 do
-	echo "$key : ${singlet[$key]}"
+	statement=`echo | awk -v key="$key" -v value="${doublet[$key]}" '{ percent = (value / 20) * 100 } END { print key " is " percent "%" }'`
+	echo "$statement"
+
 done
 
